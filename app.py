@@ -15,7 +15,7 @@ class GUI():
         self.chooseend = False
         self.endrect = None
         pygame.display.set_caption('pathfinding')
-        
+
         self.grid = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                      [0,1,0,0,0,0,0,0,0,0,0,0,0,0,0],
                      [0,0,0,0,0,0,3,0,0,0,0,0,0,0,0],
@@ -32,7 +32,7 @@ class GUI():
                      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],]
         
-        self.creategrid()
+        self.createrectgrid()
     
     def run(self):
         while True:
@@ -82,7 +82,7 @@ class GUI():
                         print(row)
 
 
-    def creategrid(self):
+    def createrectgrid(self):
         for row_index, row in enumerate(self.grid):
             for col_index, col in enumerate(row):
                 if col == 0:
