@@ -1,6 +1,6 @@
 import pygame,sys,pygame_textinput
 from config import *
-
+import math
 
 
 
@@ -67,11 +67,11 @@ class GUI():
                     for object, (rect,color,pos) in enumerate(self.rectlist):
                         if rect.collidepoint(mouseposition):
                             if self.choosestart:
-                                self.rectlist[object] = (rect,'green',pos)
+                                self.rectlist[object] = (rect,'purple',pos)
                                 self.startrect = self.rectlist[object]
                                 self.choosestart = False
                             elif self.chooseend:
-                                self.rectlist[object] = (rect,'red',pos)
+                                self.rectlist[object] = (rect,'pink',pos)
                                 self.endrect = self.rectlist[object]
                                 self.chooseend = False
                             else:
@@ -83,6 +83,7 @@ class GUI():
 
 
     def createrectgrid(self):
+        self.rectlist = []
         for row_index, row in enumerate(self.grid):
             for col_index, col in enumerate(row):
                 if col == 0:
@@ -92,17 +93,27 @@ class GUI():
                     self.rectlist.append((rect,color,pos))
                 if col == 1:
                     rect = pygame.Rect((col_index*tilesize+((widht-(len(self.grid[1])*tilesize))/2),row_index*tilesize,tilesize-1,tilesize-1))
-                    color = 'green'
+                    color = 'purple'
                     pos = row_index,col_index
                     self.rectlist.append((rect,color,pos))
                 if col == 2:
                     rect = pygame.Rect((col_index*tilesize+((widht-(len(self.grid[1])*tilesize))/2),row_index*tilesize,tilesize-1,tilesize-1))
-                    color = 'red'
+                    color = 'pink'
                     pos = row_index,col_index
                     self.rectlist.append((rect,color,pos))
                 if col == 3:
                     rect = pygame.Rect((col_index*tilesize+((widht-(len(self.grid[1])*tilesize))/2),row_index*tilesize,tilesize-1,tilesize-1))
                     color = 'blue'
+                    pos = row_index,col_index
+                    self.rectlist.append((rect,color,pos))
+                if col == 4:
+                    rect = pygame.Rect((col_index*tilesize+((widht-(len(self.grid[1])*tilesize))/2),row_index*tilesize,tilesize-1,tilesize-1))
+                    color = 'green'
+                    pos = row_index,col_index
+                    self.rectlist.append((rect,color,pos))
+                if col == 5:
+                    rect = pygame.Rect((col_index*tilesize+((widht-(len(self.grid[1])*tilesize))/2),row_index*tilesize,tilesize-1,tilesize-1))
+                    color = 'red'
                     pos = row_index,col_index
                     self.rectlist.append((rect,color,pos))
 
@@ -116,12 +127,48 @@ class GUI():
             row_index,col_index = pos
             if color == 'white':
                 self.grid[row_index][col_index] = 0
-            if color == 'green':
+            if color == 'purple':
                 self.grid[row_index][col_index] = 1
-            if color == 'red':
+            if color == 'pink':
                 self.grid[row_index][col_index] = 2
             if color == 'blue':
                 self.grid[row_index][col_index] = 3
+
+    def astar(self):
+        rect,color,posstart = self.startrect
+        rect,color,posend = self.endrect
+
+        endnode = posend
+        startnode = posstart
+        current =  None
+        opennodes = []
+        closenodes = []
+        opennodes.append(startnode,math.dist(startnode,endnode))
+        while True:
+            self.createrectgrid()
+            current = min(opennodes, key= lambda t: t[2])
+            closenodes.append(current)
+            opennodes.remove(current)
+            if current == endnode:
+                return
+            x,y = current[0]
+            neighbor1 = x+1,y
+            neighbor2 = x-1,y
+
+
+            for nodes in opennodes:
+                x,y = nodes
+                self.grid[x][y] = 4
+            for nodes in closenodes:
+                x,y = nodes
+                self.grid[x][y] = 5
+    
+        
+        
+            
+
+
+
 
 if __name__ is "__main__":
     gui = GUI()
