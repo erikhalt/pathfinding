@@ -9,3 +9,13 @@ Q = clear grid <br>
 R = choose start Node <br>
 T = choose end Node <br>
 Space = run A* algorithm
+<br>
+<br>
+<br>
+<br>
+
+python -m venv env
+<br>
+pip install -r requirements.txt
+<br>
+god to go
