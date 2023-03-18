@@ -17,7 +17,7 @@ class GUI():
         pygame.display.set_caption('pathfinding')
 
         self.grid = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                     [0,1,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                      [0,0,0,0,0,0,3,0,0,0,0,0,0,0,0],
                      [0,0,0,0,0,0,3,0,0,0,0,0,0,0,0],
                      [0,0,0,0,0,0,3,0,0,0,0,0,0,0,0],
@@ -27,7 +27,7 @@ class GUI():
                      [0,0,0,0,0,0,0,3,3,3,0,0,0,0,0],
                      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                     [0,0,0,0,0,0,0,0,0,0,0,0,0,2,0],
+                     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],]
@@ -80,6 +80,7 @@ class GUI():
                 if key[pygame.K_SPACE]:
                     for row in self.grid:
                         print(row)
+                        self.astar()
 
 
     def createrectgrid(self):
@@ -143,24 +144,30 @@ class GUI():
         current =  None
         opennodes = []
         closenodes = []
-        opennodes.append(startnode,math.dist(startnode,endnode))
+        opennodes.append((startnode,math.dist(startnode,endnode)))
         while True:
             self.createrectgrid()
-            current = min(opennodes, key= lambda t: t[2])
+            self.drawgrid()
+            pygame.display.flip()
+            current = min(opennodes, key= lambda t: t[1])
             closenodes.append(current)
             opennodes.remove(current)
             if current == endnode:
                 return
-            x,y = current[0]
-            neighbor1 = x+1,y
-            neighbor2 = x-1,y
+            
 
 
             for nodes in opennodes:
-                x,y = nodes
+                pos,f_cost = nodes
+                if pos == startnode or pos == endnode:
+                    return
+                x,y = pos
                 self.grid[x][y] = 4
             for nodes in closenodes:
-                x,y = nodes
+                pos,f_cost = nodes
+                if pos == startnode or pos == endnode:
+                    return
+                x,y = pos
                 self.grid[x][y] = 5
     
         
