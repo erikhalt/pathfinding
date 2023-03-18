@@ -12,6 +12,10 @@ class GUI():
         self.rectlist = []
         pygame.display.set_caption('Pathfinder')
         self.creategrid()
+        self.startrect = None
+        self.choosestart = False
+        self.chooseend = False
+        self.endrect = None
 
     def creategrid(self):
         for row_index in range(0,int(height/tilesize)-10,1):
@@ -32,14 +36,36 @@ class GUI():
             self.drawgrid()
 
             for event in pygame.event.get():
+                key = pygame.key.get_pressed()
                 if event.type == pygame.QUIT:
                     sys.exit()
-
+                if key[pygame.K_r]:
+                    self.choosestart = True
+                if key[pygame.K_t]:
+                    self.chooseend = True
+                if key[pygame.K_q]:
+                    self.startrect = None
+                    self.choosestart = False
+                    self.chooseend = False
+                    self.endrect = None
+                    for object, (rect,color) in enumerate(self.rectlist):
+                        self.rectlist[object] = (rect,'white')
+                
                 if event.type == pygame.MOUSEBUTTONUP:
+
                     mouseposition = pygame.mouse.get_pos()
                     for object, (rect,color) in enumerate(self.rectlist):
                         if rect.collidepoint(mouseposition):
-                            self.rectlist[object] = (rect,'blue')
+                            if self.choosestart:
+                                self.rectlist[object] = (rect,'green')
+                                self.startrect = self.rectlist[object]
+                                self.choosestart = False
+                            elif self.chooseend:
+                                self.rectlist[object] = (rect,'red')
+                                self.endrect = self.rectlist[object]
+                                self.chooseend = False
+                            else:
+                                self.rectlist[object] = (rect,'blue')
             
 
     
