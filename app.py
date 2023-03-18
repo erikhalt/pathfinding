@@ -72,17 +72,15 @@ class GUI():
                                 self.startrect = self.rectlist[object]
                                 self.choosestart = False
                             elif self.chooseend:
-                                self.rectlist[object] = (rect,'pink',pos)
+                                self.rectlist[object] = (rect,'blue',pos)
                                 self.endrect = self.rectlist[object]
                                 self.chooseend = False
                             else:
-                                self.rectlist[object] = (rect,'blue',pos)
+                                self.rectlist[object] = (rect,'darkgrey',pos)
                 
                 if key[pygame.K_SPACE]:
-                    for row in self.grid:
-                        print(row)
-                        self.astar()
-
+                    self.astar()
+                    break
 
     def createrectgrid(self):
         self.rectlist = []
@@ -100,12 +98,12 @@ class GUI():
                     self.rectlist.append((rect,color,pos))
                 if col == 2:
                     rect = pygame.Rect((col_index*tilesize+((widht-(len(self.grid[1])*tilesize))/2),row_index*tilesize,tilesize-1,tilesize-1))
-                    color = 'pink'
+                    color = 'blue'
                     pos = row_index,col_index
                     self.rectlist.append((rect,color,pos))
                 if col == 3:
                     rect = pygame.Rect((col_index*tilesize+((widht-(len(self.grid[1])*tilesize))/2),row_index*tilesize,tilesize-1,tilesize-1))
-                    color = 'blue'
+                    color = 'darkgrey'
                     pos = row_index,col_index
                     self.rectlist.append((rect,color,pos))
                 if col == 4:
@@ -131,25 +129,25 @@ class GUI():
                 self.grid[row_index][col_index] = 0
             if color == 'purple':
                 self.grid[row_index][col_index] = 1
-            if color == 'pink':
-                self.grid[row_index][col_index] = 2
             if color == 'blue':
+                self.grid[row_index][col_index] = 2
+            if color == 'darkgrey':
                 self.grid[row_index][col_index] = 3
 
     def astar(self):
         try:
-            search = True
             rect,color,posstart = self.startrect
             rect,color,posend = self.endrect
 
             endnode = posend
             startnode = posstart
             current =  None
+            parent = None
             opennodes = []
             closenodes = []
-            opennodes.append((startnode,math.dist(startnode,endnode)))
-            while search:
-                sleep(1) 
+            opennodes.append((startnode,math.dist(startnode,endnode),parent))
+            while True:
+                sleep(0.2) 
                 self.createrectgrid()
                 self.drawgrid()
                 pygame.display.flip()
@@ -157,20 +155,45 @@ class GUI():
                 closenodes.append(current)
                 opennodes.remove(current)
                 
-                print(f'{current[0]}------{endnode}')
-                
                 if current[0] == endnode:
-                    print('done')
-                    return
+                    while True:
+                        self.createrectgrid()
+                        self.drawgrid()
+                        pygame.display.flip()
+                        for nodes in closenodes:
+                            if current[2] == nodes[0]:
+                                x,y = current[0]
+                                self.grid[x][y] = 2
+                                current = nodes
+                            if current[2] == None:
+                                x,y = current[0]
+                                self.grid[x][y] = 2
+                                self.createrectgrid()
+                                self.drawgrid()
+                                pygame.display.flip()
+                                return
+                        
                 x,y = current[0]
                 for i in range(-1,2,1):
                     for j in range(-1,2,1):
                         try:
-                            if self.grid[x+i][y+j] != 0:
+                            if x+i > 15 or x+i < 0 or y+j > 15 or y+j < 0:
+                                pass
+                            elif self.grid[x+i][y+j] != 0 and self.grid[x+i][y+j] != 2:
+                                pass
+                            elif (x+i,y+j) == (x,y):
                                 pass
                             else:
-                                f_cost = math.dist((x+i,y+j),startnode)+math.dist((x+i,y+j),endnode)
-                                opennodes.append(((x+i,y+j),f_cost))
+                                try:
+                                    g_cost = math.dist((x+i,y+j),endnode)
+                                except:
+                                    g_cost = 0
+                                try:
+                                    h_cost = math.dist((x+i,y+j),startnode)
+                                except:
+                                    h_cost = 0
+                                f_cost = g_cost+h_cost
+                                opennodes.append(((x+i,y+j),f_cost,(x,y)))
                         except:
                             pass
 
@@ -178,21 +201,21 @@ class GUI():
 
 
                 for nodes in opennodes:
-                    pos,f_cost = nodes
+                    pos,f_cost,parent = nodes
                     x,y = pos
                     if pos == startnode or pos == endnode:
                         pass
                     else:
                         self.grid[x][y] = 4
                 for nodes in closenodes:
-                    pos,f_cost = nodes
+                    pos,f_cost,parent = nodes
                     x,y = pos
                     if pos == startnode or pos == endnode:
                         pass
                     else:
                         self.grid[x][y] = 5
         except:
-            pass
+            print('something went wrong')
         
         
             
