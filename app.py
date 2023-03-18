@@ -1,4 +1,5 @@
 import pygame,sys,pygame_textinput
+from time import sleep
 from config import *
 import math
 
@@ -136,40 +137,62 @@ class GUI():
                 self.grid[row_index][col_index] = 3
 
     def astar(self):
-        rect,color,posstart = self.startrect
-        rect,color,posend = self.endrect
+        try:
+            search = True
+            rect,color,posstart = self.startrect
+            rect,color,posend = self.endrect
 
-        endnode = posend
-        startnode = posstart
-        current =  None
-        opennodes = []
-        closenodes = []
-        opennodes.append((startnode,math.dist(startnode,endnode)))
-        while True:
-            self.createrectgrid()
-            self.drawgrid()
-            pygame.display.flip()
-            current = min(opennodes, key= lambda t: t[1])
-            closenodes.append(current)
-            opennodes.remove(current)
-            if current == endnode:
-                return
-            
-
-
-            for nodes in opennodes:
-                pos,f_cost = nodes
-                if pos == startnode or pos == endnode:
+            endnode = posend
+            startnode = posstart
+            current =  None
+            opennodes = []
+            closenodes = []
+            opennodes.append((startnode,math.dist(startnode,endnode)))
+            while search:
+                sleep(1) 
+                self.createrectgrid()
+                self.drawgrid()
+                pygame.display.flip()
+                current = min(opennodes, key= lambda t: t[1])
+                closenodes.append(current)
+                opennodes.remove(current)
+                
+                print(f'{current[0]}------{endnode}')
+                
+                if current[0] == endnode:
+                    print('done')
                     return
-                x,y = pos
-                self.grid[x][y] = 4
-            for nodes in closenodes:
-                pos,f_cost = nodes
-                if pos == startnode or pos == endnode:
-                    return
-                x,y = pos
-                self.grid[x][y] = 5
-    
+                x,y = current[0]
+                for i in range(-1,2,1):
+                    for j in range(-1,2,1):
+                        try:
+                            if self.grid[x+i][y+j] != 0:
+                                pass
+                            else:
+                                f_cost = math.dist((x+i,y+j),startnode)+math.dist((x+i,y+j),endnode)
+                                opennodes.append(((x+i,y+j),f_cost))
+                        except:
+                            pass
+
+
+
+
+                for nodes in opennodes:
+                    pos,f_cost = nodes
+                    x,y = pos
+                    if pos == startnode or pos == endnode:
+                        pass
+                    else:
+                        self.grid[x][y] = 4
+                for nodes in closenodes:
+                    pos,f_cost = nodes
+                    x,y = pos
+                    if pos == startnode or pos == endnode:
+                        pass
+                    else:
+                        self.grid[x][y] = 5
+        except:
+            pass
         
         
             
@@ -177,6 +200,6 @@ class GUI():
 
 
 
-if __name__ is "__main__":
+if __name__ == "__main__":
     gui = GUI()
     gui.run()
