@@ -1,4 +1,4 @@
-widht = 600
-height = 600
+widht = 800
+height = 800
 fps = 60 
-tilesize = 30
+tilesize = 20
