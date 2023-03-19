@@ -2,6 +2,7 @@ import pygame,sys,pygame_textinput
 from time import sleep
 from config import *
 import math
+import asyncio
 
 
 
@@ -41,7 +42,7 @@ class GUI():
         
         self.createrectgrid()
     
-    def run(self):
+    async def run(self):
         while True:
             self.clock.tick(fps)
             pygame.display.flip()
@@ -87,6 +88,7 @@ class GUI():
                 if key[pygame.K_SPACE]:
                     self.astar()
                     break
+            await asyncio.sleep(0)
 
     def createrectgrid(self):
         self.rectlist = []
@@ -202,7 +204,7 @@ class GUI():
                                 opennodes.append(((x+i,y+j),f_cost,(x,y)))
                         except:
                             pass
-
+                
 
 
 
@@ -230,5 +232,5 @@ class GUI():
 
 
 if __name__ == "__main__":
-    gui = GUI()
-    gui.run()
+    app = GUI()
+    asyncio.run(app.run())
