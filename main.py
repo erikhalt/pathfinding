@@ -2,7 +2,6 @@ import pygame,sys,pygame_textinput
 from time import sleep
 from config import *
 import math
-import asyncio
 
 
 
@@ -17,6 +16,7 @@ class GUI():
         self.chooseend = False
         self.endrect = None
         pygame.display.set_caption('pathfinding')
+        # pygame.display.toggle_fullscreen()
 
         self.grid = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -42,7 +42,7 @@ class GUI():
         
         self.createrectgrid()
     
-    async def run(self):
+    def run(self):
         while True:
             self.clock.tick(fps)
             pygame.display.flip()
@@ -88,7 +88,7 @@ class GUI():
                 if key[pygame.K_SPACE]:
                     self.astar()
                     break
-            await asyncio.sleep(0)
+            
 
     def createrectgrid(self):
         self.rectlist = []
@@ -233,4 +233,4 @@ class GUI():
 
 if __name__ == "__main__":
     app = GUI()
-    asyncio.run(app.run())
+    app.run()
